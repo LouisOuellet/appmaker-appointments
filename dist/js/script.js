@@ -52,9 +52,9 @@ API.Plugins.appointments = {
 				},function(result) {
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
-						for(const [key, value] of Object.entries(dataset.output.results)){ API.Helper.set(API.Contents,['data','dom','appointments',value.id],value); }
+						for(const [key, value] of Object.entries(dataset.output.dom)){ API.Helper.set(API.Contents,['data','dom','appointments',value.id],value); }
 						for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','appointments',value.id],value); }
-						API.Builder.table(card.children('.card-body'), dataset.output.results, {
+						API.Builder.table(card.children('.card-body'), dataset.output.dom, {
 							headers:dataset.output.headers,
 							id:'AppointmentsIndex',
 							modal:true,
@@ -96,7 +96,7 @@ API.Plugins.appointments = {
 				API.request('appointments','read',{data:{id:id,key:'id'}},function(result){
 					var dataset = JSON.parse(result);
 					if(dataset.success != undefined){
-						API.Helper.set(API.Contents,['data','dom','appointments',dataset.output.results.id],dataset.output.results);
+						API.Helper.set(API.Contents,['data','dom','appointments',dataset.output.dom.id],dataset.output.dom);
 						API.Helper.set(API.Contents,['data','raw','appointments',dataset.output.raw.id],dataset.output.raw);
 						var appointment = dataset.output.raw;
 					}
@@ -119,10 +119,10 @@ API.Plugins.appointments = {
 						API.request('clients','read',{data:{id:appointment.raw.client,key:'id'},toast:false,pace:false},function(result){
 							var dataset = JSON.parse(result);
 							if(dataset.success != undefined){
-								API.Helper.set(API.Contents,['data','dom','clients',dataset.output.results.name],dataset.output.results);
+								API.Helper.set(API.Contents,['data','dom','clients',dataset.output.dom.name],dataset.output.dom);
 								API.Helper.set(API.Contents,['data','raw','clients',dataset.output.raw.id],dataset.output.raw);
 								client.raw = dataset.output.raw;
-								client.dom = dataset.output.results;
+								client.dom = dataset.output.dom;
 								API.GUI.insert(client.dom,{plugin:"clients"});
 							}
 						});
@@ -136,11 +136,11 @@ API.Plugins.appointments = {
 						API.request('contacts','read',{data:{id:appointment.raw.contact,key:'id'},toast:false,pace:false},function(result){
 							var dataset = JSON.parse(result);
 							if(dataset.success != undefined){
-								API.Helper.set(API.Contents,['data','dom','contacts',dataset.output.results.id],dataset.output.results);
+								API.Helper.set(API.Contents,['data','dom','contacts',dataset.output.dom.id],dataset.output.dom);
 								API.Helper.set(API.Contents,['data','raw','contacts',dataset.output.raw.id],dataset.output.raw);
 								var contact = {};
 								contact.raw = dataset.output.raw;
-								contact.dom = dataset.output.results;
+								contact.dom = dataset.output.dom;
 								API.GUI.insert(contact.dom,{plugin:"contacts"});
 							}
 						});
@@ -155,11 +155,11 @@ API.Plugins.appointments = {
 						API.request('users','read',{data:{id:appointment.raw.assigned_to,key:'id'},toast:false,pace:false},function(result){
 							var dataset = JSON.parse(result);
 							if(dataset.success != undefined){
-								API.Helper.set(API.Contents,['data','dom','users',dataset.output.results.username],dataset.output.results);
+								API.Helper.set(API.Contents,['data','dom','users',dataset.output.dom.username],dataset.output.dom);
 								API.Helper.set(API.Contents,['data','raw','users',dataset.output.raw.id],dataset.output.raw);
 								var user = {};
 								user.raw = dataset.output.raw;
-								user.dom = dataset.output.results;
+								user.dom = dataset.output.dom;
 								API.GUI.insert(user.dom,{plugin:"users"});
 							}
 						});
@@ -186,10 +186,10 @@ API.Plugins.appointments = {
 						var dataset = JSON.parse(result);
 						if(dataset.success != undefined){
 							if(API.Helper.isSet(dataset,['output','results',0,'id'])){
-								API.Helper.set(API.Contents,['data','dom','notes',dataset.output.results[0].id],dataset.output.results[0]);
+								API.Helper.set(API.Contents,['data','dom','notes',dataset.output.dom[0].id],dataset.output.dom[0]);
 								API.Helper.set(API.Contents,['data','raw','notes',dataset.output.raw[0].id],dataset.output.raw[0]);
 								note.raw = dataset.output.raw[0];
-								note.dom = dataset.output.results[0];
+								note.dom = dataset.output.dom[0];
 							}
 							GUI.isNoteReady = true;
 						}
@@ -204,7 +204,7 @@ API.Plugins.appointments = {
 								API.request('divisions','read',{toast:false,pace:false},function(result){
 									var dataset = JSON.parse(result);
 									if(dataset.success != undefined){
-										for(const [key, value] of Object.entries(dataset.output.results)){ API.Helper.set(API.Contents,['data','dom','divisions',value.name],value); }
+										for(const [key, value] of Object.entries(dataset.output.dom)){ API.Helper.set(API.Contents,['data','dom','divisions',value.name],value); }
 										for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','divisions',value.id],value); }
 										divisions.raw[division] = API.Contents.data.raw.divisions[division];
 										divisions.dom[divisions.raw[division].name] = API.Contents.data.dom.divisions[divisions.raw[division].name];
@@ -227,7 +227,7 @@ API.Plugins.appointments = {
 									var dataset = JSON.parse(result);
 									if(dataset.success != undefined){
 										for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','issues',value.id],value); }
-										for(const [key, value] of Object.entries(dataset.output.results)){ API.Helper.set(API.Contents,['data','dom','issues',value.id],value); }
+										for(const [key, value] of Object.entries(dataset.output.dom)){ API.Helper.set(API.Contents,['data','dom','issues',value.id],value); }
 										issues.raw[issue] = API.Contents.data.raw.issues[issue];
 										issues.dom[issue] = API.Contents.data.dom.issues[issue];
 									}
@@ -257,12 +257,12 @@ API.Plugins.appointments = {
 								API.Helper.set(API.Contents,['data','raw','status',value.id],value);
 								API.Helper.set(statuses.raw,[value.type,value.record],value);
 							}
-							for(const [key, value] of Object.entries(dataset.output.results)){
+							for(const [key, value] of Object.entries(dataset.output.dom)){
 								API.Helper.set(API.Contents,['data','dom','status',value.id],value);
 								API.Helper.set(statuses.dom,[value.type,value.record],value);
 							}
 							var checkExistStatus = setInterval(function(){
-								if((Object.keys(statuses.dom.divisions).length + Object.keys(statuses.dom.issues).length) == Object.keys(dataset.output.results).length){
+								if((Object.keys(statuses.dom.divisions).length + Object.keys(statuses.dom.issues).length) == Object.keys(dataset.output.dom).length){
 									clearInterval(checkExistStatus);
 									GUI.isStatusesReady = true;
 								}
@@ -458,7 +458,7 @@ API.Plugins.appointments = {
 											},function(result){
 												var dataset = JSON.parse(result);
 												if(dataset.success != undefined){
-													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.results.id],dataset.output.results);
+													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.dom.id],dataset.output.dom);
 													API.Helper.set(API.Contents,['data','raw','notes',dataset.output.raw.id],dataset.output.raw);
 													note.element.attr('data-note-id',dataset.output.raw.id);
 												}
@@ -510,7 +510,7 @@ API.Plugins.appointments = {
 											},function(result){
 												var dataset = JSON.parse(result);
 												if(dataset.success != undefined){
-													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.results.id],dataset.output.results);
+													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.dom.id],dataset.output.dom);
 													API.Helper.set(API.Contents,['data','raw','notes',dataset.output.raw.id],dataset.output.raw);
 													note.element.attr('data-note-id',dataset.output.raw.id);
 												}
@@ -605,7 +605,7 @@ API.Plugins.appointments = {
 											},function(result){
 												var dataset = JSON.parse(result);
 												if(dataset.success != undefined){
-													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.results.id],dataset.output.results);
+													API.Helper.set(API.Contents,['data','dom','notes',dataset.output.dom.id],dataset.output.dom);
 													API.Helper.set(API.Contents,['data','raw','notes',dataset.output.raw.id],dataset.output.raw);
 													note.element.attr('data-note-id',dataset.output.raw.id);
 												}
@@ -734,7 +734,7 @@ API.Plugins.appointments = {
 													},function(result){
 														var dataset = JSON.parse(result);
 														if(dataset.success != undefined){
-															API.Helper.set(API.Contents,['data','dom','notes',dataset.output.results.id],dataset.output.results);
+															API.Helper.set(API.Contents,['data','dom','notes',dataset.output.dom.id],dataset.output.dom);
 															API.Helper.set(API.Contents,['data','raw','notes',dataset.output.raw.id],dataset.output.raw);
 															note.element.attr('data-note-id',dataset.output.raw.id);
 														}
@@ -775,7 +775,7 @@ API.Plugins.appointments = {
 																	},function(result){
 																		var dataset = JSON.parse(result);
 																		if(dataset.success != undefined){
-																			API.Helper.set(API.Contents,['data','dom','appointments',dataset.output.results.id],dataset.output.results);
+																			API.Helper.set(API.Contents,['data','dom','appointments',dataset.output.dom.id],dataset.output.dom);
 																			API.Helper.set(API.Contents,['data','raw','appointments',dataset.output.raw.id],dataset.output.raw);
 																		}
 																	});
@@ -856,7 +856,7 @@ API.Plugins.appointments = {
 								if(typeof dataset.success !== 'undefined'){
 									var readyNotes = false;
 									var notes = [];
-									for(const [key, value] of Object.entries(dataset.output.results)){
+									for(const [key, value] of Object.entries(dataset.output.dom)){
 										API.Helper.set(API.Contents,['data','dom','appointments',value.id],value);
 										API.request('notes','read',{
 											data:{filters:[{relationship:'equal', name:'relationship', value:'appointments'},{relationship:'equal', name:'link_to', value:value.id}]},
@@ -864,13 +864,13 @@ API.Plugins.appointments = {
 											pace:false,
 										},function(result){
 											var data = JSON.parse(result);
-											if(typeof data.success !== 'undefined'){ notes.push(data.output.results[0]); }
-											if(key == Object.keys(dataset.output.results)[Object.keys(dataset.output.results).length-1]){ readyNotes = true; }
+											if(typeof data.success !== 'undefined'){ notes.push(data.output.dom[0]); }
+											if(key == Object.keys(dataset.output.dom)[Object.keys(dataset.output.dom).length-1]){ readyNotes = true; }
 										});
 									}
 									for(const [key, value] of Object.entries(dataset.output.raw)){ API.Helper.set(API.Contents,['data','raw','appointments',value.id],value); }
 									API.Plugins.clients.Tabs.add('appointments', function(tab){
-										API.Builder.table(tab, dataset.output.results, {
+										API.Builder.table(tab, dataset.output.dom, {
 											headers:dataset.output.headers,
 											id:'ClientsAppointments',
 											modal:true,
